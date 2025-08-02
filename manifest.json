@@ -6,7 +6,8 @@
   "permissions": [
     "activeTab",
     "storage",
-    "alarms"
+    "alarms",
+    "notifications"
   ],
   "host_permissions": [
     "https://www.gmgn.cc/*"

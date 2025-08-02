@@ -54,6 +54,15 @@ class BackgroundService {
                     this.restartTracking();
                     sendResponse({ success: true });
                     break;
+                    
+                case 'UPDATE_SETTINGS':
+                    this.updateSettings(message.settings);
+                    sendResponse({ success: true });
+                    break;
+                    
+                case 'GET_SETTINGS':
+                    this.getSettings().then(sendResponse);
+                    return true;
             }
         });
     }
@@ -158,15 +167,42 @@ class BackgroundService {
     }
     
     updateBadge(price) {
-        // Обновляем badge в иконке расширения
-        const priceText = price.toFixed(6).replace(/\.?0+$/, '');
-        
-        chrome.action.setBadgeText({
-            text: priceText.length > 4 ? priceText.substring(0, 4) : priceText
+        // Проверяем настройки для отображения badge
+        chrome.storage.sync.get(['robotcyb-settings'], (result) => {
+            const settings = result['robotcyb-settings'] || {};
+            if (settings.showBadge !== false) {
+                const priceText = price.toFixed(6).replace(/\.?0+$/, '');
+                
+                chrome.action.setBadgeText({
+                    text: priceText.length > 4 ? priceText.substring(0, 4) : priceText
+                });
+                
+                chrome.action.setBadgeBackgroundColor({
+                    color: '#00ff41'
+                });
+            } else {
+                chrome.action.setBadgeText({ text: '' });
+            }
         });
-        
-        chrome.action.setBadgeBackgroundColor({
-            color: '#00ff41'
+    }
+    
+    updateSettings(settings) {
+        // Обновляем настройки
+        this.updateInterval = settings.updateInterval || 30000;
+        this.restartTracking();
+    }
+    
+    async getSettings() {
+        return new Promise((resolve) => {
+            chrome.storage.sync.get(['robotcyb-settings'], (result) => {
+                resolve(result['robotcyb-settings'] || {
+                    updateInterval: 30000,
+                    showWidget: true,
+                    showBadge: true,
+                    enableNotifications: false,
+                    defaultTheme: 'green'
+                });
+            });
         });
     }
     

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RobotCYB Settings</title>
+    <link rel="stylesheet" href="settings.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <img src="icons/icon48.svg" alt="RobotCYB" class="logo-img" id="settingsLogo">
+                <h1 class="title">RobotCYB Settings</h1>
+                <div class="theme-toggle" id="settingsThemeToggle">
+                    <div class="toggle-indicator"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="settings-section">
+            <div class="settings-card">
+                <h2 class="section-title">Update Interval</h2>
+                <div class="setting-item">
+                    <label for="updateInterval">Price Update Frequency:</label>
+                    <select id="updateInterval" class="setting-select">
+                        <option value="15000">15 seconds</option>
+                        <option value="30000" selected>30 seconds</option>
+                        <option value="60000">1 minute</option>
+                        <option value="300000">5 minutes</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="settings-card">
+                <h2 class="section-title">Display Options</h2>
+                <div class="setting-item">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="showWidget" checked>
+                        <span class="checkmark"></span>
+                        Show widget on web pages
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="showBadge" checked>
+                        <span class="checkmark"></span>
+                        Show price badge on extension icon
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="enableNotifications">
+                        <span class="checkmark"></span>
+                        Enable price change notifications
+                    </label>
+                </div>
+            </div>
+            
+            <div class="settings-card">
+                <h2 class="section-title">Theme Settings</h2>
+                <div class="setting-item">
+                    <label>Default Theme:</label>
+                    <div class="theme-buttons">
+                        <button class="theme-btn active" data-theme="green">
+                            <div class="theme-preview green"></div>
+                            <span>Green</span>
+                        </button>
+                        <button class="theme-btn" data-theme="pink">
+                            <div class="theme-preview pink"></div>
+                            <span>Pink</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="settings-card">
+                <h2 class="section-title">Token Information</h2>
+                <div class="token-info">
+                    <div class="info-row">
+                        <span class="info-label">Token Name:</span>
+                        <span class="info-value">RobotCYB</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Token Address:</span>
+                        <span class="info-value">8WZiguAp8NyFnwm8Z97k6sCbSRCWaW1YYXKeCTpupump</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Blockchain:</span>
+                        <span class="info-value">Solana</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Chart API:</span>
+                        <span class="info-value">GMGN</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="save-btn" id="saveSettings">
+                <span class="btn-text">Save Settings</span>
+                <div class="btn-glow"></div>
+            </button>
+            <button class="reset-btn" id="resetSettings">
+                <span class="btn-text">Reset to Default</span>
+                <div class="btn-glow"></div>
+            </button>
+        </div>
+        
+        <div class="footer">
+            <div class="version-info">
+                Version: 1.0.0 | RobotCYB Price Tracker
+            </div>
+        </div>
+    </div>
+    
+    <script src="settings.js"></script>
+</body>
+</html> 
