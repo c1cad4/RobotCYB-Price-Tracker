@@ -1,0 +1,309 @@
+/* Content CSS для RobotCYB Price Tracker */
+
+/* Глобальные стили для виджета */
+.robotcyb-widget {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 200px !important;
+    background: rgba(0, 0, 0, 0.95) !important;
+    border: 2px solid #00ff41 !important;
+    border-radius: 10px !important;
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.4) !important;
+    z-index: 10000 !important;
+    font-family: 'Courier New', monospace !important;
+    color: #00ff41 !important;
+    backdrop-filter: blur(10px) !important;
+    animation: widgetAppear 0.5s ease-out !important;
+    pointer-events: auto !important;
+    transition: all 0.3s ease !important;
+}
+
+.robotcyb-widget.pink-theme {
+    border-color: #ff0080 !important;
+    box-shadow: 0 0 20px rgba(255, 0, 128, 0.4) !important;
+    color: #ff0080 !important;
+}
+
+@keyframes widgetAppear {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.widget-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 10px !important;
+    border-bottom: 1px solid #00ff41 !important;
+    cursor: move !important;
+    transition: all 0.3s ease !important;
+}
+
+.robotcyb-widget.pink-theme .widget-header {
+    border-bottom-color: #ff0080 !important;
+}
+
+.widget-logo {
+    display: flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    position: relative !important;
+}
+
+.widget-theme-toggle {
+    width: 16px !important;
+    height: 16px !important;
+    border-radius: 50% !important;
+    background: #00ff41 !important;
+    cursor: pointer !important;
+    position: relative !important;
+    margin-left: 5px !important;
+    box-shadow: 0 0 8px rgba(0, 255, 65, 0.5) !important;
+    transition: all 0.3s ease !important;
+}
+
+.widget-theme-toggle:hover {
+    transform: scale(1.1) !important;
+    box-shadow: 0 0 12px rgba(0, 255, 65, 0.8) !important;
+}
+
+.widget-theme-toggle.pink {
+    background: #ff0080 !important;
+    box-shadow: 0 0 8px rgba(255, 0, 128, 0.5) !important;
+}
+
+.widget-theme-toggle.pink:hover {
+    box-shadow: 0 0 12px rgba(255, 0, 128, 0.8) !important;
+}
+
+.widget-toggle-indicator {
+    width: 6px !important;
+    height: 6px !important;
+    background: #000 !important;
+    border-radius: 50% !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    transition: all 0.3s ease !important;
+}
+
+.widget-logo img {
+    width: 16px !important;
+    height: 16px !important;
+    border-radius: 50% !important;
+    border: 1px solid #00ff41 !important;
+    transition: all 0.3s ease !important;
+}
+
+.robotcyb-widget.pink-theme .widget-logo img {
+    border-color: #ff0080 !important;
+}
+
+.widget-title {
+    font-size: 12px !important;
+    font-weight: bold !important;
+    text-shadow: 0 0 5px #00ff41 !important;
+    transition: all 0.3s ease !important;
+}
+
+.robotcyb-widget.pink-theme .widget-title {
+    text-shadow: 0 0 5px #ff0080 !important;
+}
+
+.widget-close {
+    cursor: pointer !important;
+    font-size: 18px !important;
+    color: #00ff41 !important;
+    transition: color 0.3s ease !important;
+}
+
+.widget-close:hover {
+    color: #ff0040 !important;
+}
+
+.robotcyb-widget.pink-theme .widget-close {
+    color: #ff0080 !important;
+}
+
+.widget-content {
+    padding: 15px !important;
+    text-align: center !important;
+}
+
+.widget-price {
+    margin-bottom: 10px !important;
+}
+
+.price-label {
+    font-size: 10px !important;
+    color: #00cc33 !important;
+    text-transform: uppercase !important;
+    transition: all 0.3s ease !important;
+}
+
+.robotcyb-widget.pink-theme .price-label {
+    color: #cc0066 !important;
+}
+
+.price-value {
+    display: block !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    color: #00ff41 !important;
+    text-shadow: 0 0 8px #00ff41 !important;
+    margin-top: 5px !important;
+    transition: all 0.3s ease !important;
+}
+
+.robotcyb-widget.pink-theme .price-value {
+    color: #ff0080 !important;
+    text-shadow: 0 0 8px #ff0080 !important;
+}
+
+.widget-change {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 5px !important;
+    font-size: 12px !important;
+}
+
+.change-value {
+    color: #00ff41 !important;
+    transition: all 0.3s ease !important;
+}
+
+.robotcyb-widget.pink-theme .change-value {
+    color: #ff0080 !important;
+}
+
+.change-arrow {
+    color: #00ff41 !important;
+    animation: blink 1s ease-in-out infinite !important;
+    transition: all 0.3s ease !important;
+}
+
+.robotcyb-widget.pink-theme .change-arrow {
+    color: #ff0080 !important;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.widget-footer {
+    display: flex !important;
+    gap: 5px !important;
+    padding: 10px !important;
+    border-top: 1px solid #00ff41 !important;
+    transition: all 0.3s ease !important;
+}
+
+.robotcyb-widget.pink-theme .widget-footer {
+    border-top-color: #ff0080 !important;
+}
+
+.widget-refresh, .widget-chart {
+    flex: 1 !important;
+    padding: 5px !important;
+    background: rgba(0, 0, 0, 0.8) !important;
+    border: 1px solid #00ff41 !important;
+    border-radius: 4px !important;
+    color: #00ff41 !important;
+    font-size: 10px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    font-family: 'Courier New', monospace !important;
+}
+
+.widget-refresh:hover, .widget-chart:hover {
+    background: rgba(0, 255, 65, 0.1) !important;
+    box-shadow: 0 0 10px rgba(0, 255, 65, 0.3) !important;
+}
+
+.robotcyb-widget.pink-theme .widget-refresh,
+.robotcyb-widget.pink-theme .widget-chart {
+    border-color: #ff0080 !important;
+    color: #ff0080 !important;
+}
+
+.robotcyb-widget.pink-theme .widget-refresh:hover,
+.robotcyb-widget.pink-theme .widget-chart:hover {
+    background: rgba(255, 0, 128, 0.1) !important;
+    box-shadow: 0 0 10px rgba(255, 0, 128, 0.3) !important;
+}
+
+.robotcyb-widget.hidden {
+    display: none !important;
+}
+
+/* Анимация обновления цены */
+@keyframes priceUpdate {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Неоновые эффекты */
+.robotcyb-widget::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        linear-gradient(45deg, transparent 30%, rgba(0, 255, 65, 0.05) 50%, transparent 70%),
+        linear-gradient(-45deg, transparent 30%, rgba(0, 255, 65, 0.03) 50%, transparent 70%);
+    pointer-events: none;
+    animation: scan 4s linear infinite;
+    border-radius: 10px;
+}
+
+@keyframes scan {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .robotcyb-widget {
+        width: 180px !important;
+        right: 10px !important;
+        top: 10px !important;
+    }
+    
+    .price-value {
+        font-size: 14px !important;
+    }
+    
+    .widget-title {
+        font-size: 11px !important;
+    }
+}
+
+/* Темная тема для лучшей видимости */
+@media (prefers-color-scheme: dark) {
+    .robotcyb-widget {
+        background: rgba(0, 0, 0, 0.98) !important;
+        border-color: #00ff41 !important;
+    }
+}
+
+/* Светлая тема */
+@media (prefers-color-scheme: light) {
+    .robotcyb-widget {
+        background: rgba(0, 0, 0, 0.95) !important;
+        border-color: #00ff41 !important;
+        box-shadow: 0 0 20px rgba(0, 255, 65, 0.5) !important;
+    }
+} 

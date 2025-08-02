@@ -1,0 +1,46 @@
+{
+  "name": "robotcyb-price-tracker",
+  "version": "1.0.0",
+  "description": "Расширение для отслеживания цен токена RobotCYB с неоновым кибер-дизайном",
+  "main": "background.js",
+  "scripts": {
+    "build": "echo 'Расширение готово к установке'",
+    "dev": "echo 'Откройте chrome://extensions/ и загрузите папку в режиме разработчика'",
+    "pack": "echo 'Создайте ZIP архив папки для публикации'"
+  },
+  "keywords": [
+    "chrome-extension",
+    "edge-extension",
+    "crypto",
+    "price-tracker",
+    "robotcyb",
+    "solana",
+    "cyberpunk",
+    "neon"
+  ],
+  "author": "RobotCYB Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/robotcyb/price-tracker-extension"
+  },
+  "bugs": {
+    "url": "https://github.com/robotcyb/price-tracker-extension/issues"
+  },
+  "homepage": "https://github.com/robotcyb/price-tracker-extension#readme",
+  "engines": {
+    "chrome": ">=88",
+    "edge": ">=88"
+  },
+  "manifest": {
+    "version": 3,
+    "permissions": [
+      "activeTab",
+      "storage",
+      "alarms"
+    ],
+    "host_permissions": [
+      "https://www.gmgn.cc/*"
+    ]
+  }
+} 

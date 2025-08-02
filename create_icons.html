@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RobotCYB Icon Generator</title>
+</head>
+<body>
+    <h1>RobotCYB Icon Generator</h1>
+    <div id="icons"></div>
+    
+    <script>
+        function createIcon(size) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            
+            // Фон
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, size, size);
+            
+            // Неоновое свечение
+            const gradient = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size/2);
+            gradient.addColorStop(0, 'rgba(0, 255, 65, 0.3)');
+            gradient.addColorStop(1, 'rgba(0, 255, 65, 0)');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, size, size);
+            
+            // Робот голова
+            const headWidth = size * 0.5;
+            const headHeight = size * 0.375;
+            const headX = (size - headWidth) / 2;
+            const headY = size * 0.1875;
+            
+            ctx.fillStyle = '#00ff41';
+            ctx.fillRect(headX, headY, headWidth, headHeight);
+            
+            // Глаза
+            const eyeSize = size * 0.1;
+            const eyeY = headY + headHeight * 0.3;
+            const leftEyeX = headX + headWidth * 0.25;
+            const rightEyeX = headX + headWidth * 0.75;
+            
+            ctx.fillStyle = '#00ff41';
+            ctx.beginPath();
+            ctx.arc(leftEyeX, eyeY, eyeSize, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(rightEyeX, eyeY, eyeSize, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Антенна
+            ctx.strokeStyle = '#00ff41';
+            ctx.lineWidth = size * 0.05;
+            ctx.beginPath();
+            ctx.moveTo(size/2, headY);
+            ctx.lineTo(size/2, size * 0.1);
+            ctx.stroke();
+            
+            // Антенна точка
+            ctx.beginPath();
+            ctx.arc(size/2, size * 0.1, size * 0.03, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Тело
+            const bodyWidth = headWidth * 0.75;
+            const bodyHeight = size * 0.25;
+            const bodyX = (size - bodyWidth) / 2;
+            const bodyY = headY + headHeight + size * 0.05;
+            
+            ctx.fillRect(bodyX, bodyY, bodyWidth, bodyHeight);
+            
+            // Кнопки
+            const buttonSize = size * 0.03;
+            const buttonY = bodyY + bodyHeight * 0.3;
+            const buttonSpacing = bodyWidth / 4;
+            
+            for (let i = 1; i <= 3; i++) {
+                ctx.beginPath();
+                ctx.arc(bodyX + buttonSpacing * i, buttonY, buttonSize, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+            
+            return canvas;
+        }
+        
+        function downloadIcon(canvas, filename) {
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+        
+        // Создаем иконки разных размеров
+        const sizes = [16, 32, 48, 128];
+        const container = document.getElementById('icons');
+        
+        sizes.forEach(size => {
+            const canvas = createIcon(size);
+            const div = document.createElement('div');
+            div.style.margin = '20px';
+            div.style.display = 'inline-block';
+            
+            const title = document.createElement('h3');
+            title.textContent = `${size}x${size}`;
+            div.appendChild(title);
+            
+            div.appendChild(canvas);
+            
+            const button = document.createElement('button');
+            button.textContent = `Download ${size}x${size}.png`;
+            button.onclick = () => downloadIcon(canvas, `icon${size}.png`);
+            div.appendChild(button);
+            
+            container.appendChild(div);
+        });
+    </script>
+</body>
+</html> 

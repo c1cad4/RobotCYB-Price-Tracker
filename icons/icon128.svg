@@ -1,0 +1,42 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="neon128">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <radialGradient id="eyeGradient128" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#00ff41;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#00cc33;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00ff41;stop-opacity:0.3" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Фон -->
+  <rect width="128" height="128" fill="#000000"/>
+  
+  <!-- Внешний овал с белым свечением -->
+  <ellipse cx="64" cy="64" rx="48" ry="32" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="2.4" opacity="0.7"/>
+  
+  <!-- Внутренний вихрь (темные цвета) -->
+  <ellipse cx="64" cy="64" rx="40" ry="28" fill="url(#eyeGradient128)" opacity="0.3">
+    <animateTransform attributeName="transform" type="rotate" values="0 64 64;360 64 64" dur="4s" repeatCount="indefinite"/>
+  </ellipse>
+  
+  <!-- Центральный зеленый свет -->
+  <circle cx="64" cy="64" r="16" fill="url(#eyeGradient128)" filter="url(#neon128)">
+    <animate attributeName="r" values="16;17.6;16" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Белая точка в центре -->
+  <circle cx="64" cy="64" r="4" fill="#ffffff" opacity="0.9">
+    <animate attributeName="opacity" values="0.9;0.5;0.9" dur="1.5s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Дополнительное свечение -->
+  <ellipse cx="64" cy="64" rx="56" ry="40" fill="none" stroke="#00ff41" stroke-width="1.6" opacity="0.4">
+    <animate attributeName="opacity" values="0.4;0.1;0.4" dur="3s" repeatCount="indefinite"/>
+  </ellipse>
+</svg> 

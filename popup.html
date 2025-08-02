@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RobotCYB Price Tracker</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <img src="icons/icon48.svg" alt="RobotCYB" class="logo-img">
+                <h1 class="title">RobotCYB</h1>
+                <div class="theme-toggle" id="themeToggle">
+                    <div class="toggle-indicator"></div>
+                </div>
+            </div>
+            <div class="status-indicator" id="statusIndicator"></div>
+        </div>
+        
+        <div class="price-section">
+            <div class="price-card">
+                <h2 class="price-label">Current Price</h2>
+                <div class="price-value" id="currentPrice">$0.00</div>
+                <div class="price-change" id="priceChange">
+                    <span class="change-value">0.00%</span>
+                    <span class="change-arrow">→</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chart-section">
+            <div class="chart-container">
+                <iframe id="priceChart" 
+                        src="https://www.gmgn.cc/kline/sol/ukHH6c7mMyiWCf1b9pnWe25TSpkDDt3H5pQZgZ74J82?theme=dark&interval=15"
+                        frameborder="0"
+                        width="100%"
+                        height="200">
+                </iframe>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <div class="refresh-btn" id="refreshBtn">
+                <span class="btn-text">Refresh</span>
+                <div class="btn-glow"></div>
+            </div>
+            <div class="settings-btn" id="settingsBtn">
+                <span class="btn-text">Settings</span>
+                <div class="btn-glow"></div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="last-update">
+                Last update: <span id="lastUpdate">--:--</span>
+            </div>
+        </div>
+    </div>
+    
+    <script src="popup.js"></script>
+</body>
+</html> 

@@ -1,0 +1,46 @@
+{
+  "manifest_version": 3,
+  "name": "RobotCYB Price Tracker",
+  "version": "1.0.0",
+  "description": "Отслеживание цен RobotCYB в реальном времени с неоновым кибер-стилем",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "alarms"
+  ],
+  "host_permissions": [
+    "https://www.gmgn.cc/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "RobotCYB Price Tracker",
+    "default_icon": {
+      "16": "icons/icon16.svg",
+      "32": "icons/icon32.svg",
+      "48": "icons/icon48.svg",
+      "128": "icons/icon128.svg"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.svg",
+    "32": "icons/icon32.svg",
+    "48": "icons/icon48.svg",
+    "128": "icons/icon128.svg"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["content.css"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["icons/*"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+} 
