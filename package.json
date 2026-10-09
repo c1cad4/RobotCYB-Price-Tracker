@@ -4,6 +4,7 @@
   "description": "Расширение для отслеживания цен токена RobotCYB с неоновым кибер-дизайном",
   "main": "background.js",
   "scripts": {
+    "test": "node --test tests/*.test.cjs",
     "build": "echo 'Расширение готово к установке'",
     "dev": "echo 'Откройте chrome://extensions/ и загрузите папку в режиме разработчика'",
     "pack": "echo 'Создайте ZIP архив папки для публикации'"
@@ -29,8 +30,8 @@
   },
   "homepage": "https://github.com/robotcyb/price-tracker-extension#readme",
   "engines": {
-    "chrome": ">=88",
-    "edge": ">=88"
+    "chrome": ">=120",
+    "edge": ">=120"
   },
   "manifest": {
     "version": 3,
@@ -43,4 +44,4 @@
       "https://www.gmgn.cc/*"
     ]
   }
-} 
+}

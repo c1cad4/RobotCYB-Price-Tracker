@@ -14,7 +14,6 @@ class RobotCYBPriceTracker {
         this.loadPriceData();
         this.setupEventListeners();
         this.startAutoUpdate();
-        this.updateLastUpdateTime();
     }
     
     setupEventListeners() {
@@ -40,12 +39,13 @@ class RobotCYBPriceTracker {
             const chartIframe = document.getElementById('priceChart');
             chartIframe.src = this.chartUrl;
             
-            // Симулируем получение данных о цене (в реальном приложении здесь был бы API запрос)
-            const mockPrice = this.generateMockPrice();
-            this.updatePriceDisplay(mockPrice);
+            const response = await chrome.runtime.sendMessage({ type: 'REFRESH_PRICE' });
+            if (response?.error) throw new Error(response.error);
+            if (!response?.data) throw new Error('Price data is unavailable');
+            this.updatePriceDisplay(response.data);
             
             // Обновляем время последнего обновления
-            this.updateLastUpdateTime();
+            this.updateLastUpdateTime(response.data.timestamp);
             
         } catch (error) {
             console.error('Ошибка загрузки данных:', error);
@@ -53,21 +53,6 @@ class RobotCYBPriceTracker {
         } finally {
             this.showLoading(false);
         }
-    }
-    
-    generateMockPrice() {
-        // Генерируем реалистичную цену для демонстрации
-        const basePrice = 0.00012345;
-        const variation = (Math.random() - 0.5) * 0.00001;
-        const newPrice = basePrice + variation;
-        
-        const priceChange = this.lastPrice ? ((newPrice - this.lastPrice) / this.lastPrice) * 100 : 0;
-        this.lastPrice = newPrice;
-        
-        return {
-            price: newPrice,
-            change: priceChange
-        };
     }
     
     updatePriceDisplay(priceData) {
@@ -109,8 +94,8 @@ class RobotCYBPriceTracker {
         priceElement.style.animation = 'priceUpdate 0.5s ease-in-out';
     }
     
-    updateLastUpdateTime() {
-        const now = new Date();
+    updateLastUpdateTime(timestamp) {
+        const now = new Date(timestamp);
         const timeString = now.toLocaleTimeString('ru-RU', {
             hour: '2-digit',
             minute: '2-digit',
@@ -198,7 +183,7 @@ document.head.appendChild(style);
 
 // Инициализируем приложение
 document.addEventListener('DOMContentLoaded', () => {
-    new RobotCYBPriceTracker();
+    window.priceTracker = new RobotCYBPriceTracker();
 });
 
 // Обработка сообщений от background script
@@ -208,6 +193,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         const tracker = window.priceTracker;
         if (tracker) {
             tracker.updatePriceDisplay(message.data);
+            tracker.updateLastUpdateTime(message.data.timestamp);
         }
     }
-}); 
+});

@@ -11,23 +11,29 @@ class BackgroundService {
     }
     
     init() {
-        this.setupAlarms();
         this.setupMessageListeners();
-        this.startPriceTracking();
+        chrome.alarms.onAlarm.addListener((alarm) => {
+            if (alarm.name === 'priceUpdate' && this.isRunning) {
+                this.updatePrice().catch(error => console.error('Ошибка обновления цены:', error));
+            }
+        });
+        this.restoreTracking().catch(error => console.error('Ошибка запуска:', error));
+    }
+
+    async restoreTracking() {
+        const [state, settings] = await Promise.all([
+            chrome.storage.local.get(['trackingEnabled']), this.getSettings()
+        ]);
+        this.updateInterval = settings.updateInterval || 30000;
+        if (state.trackingEnabled !== false) await this.startPriceTracking();
     }
     
     setupAlarms() {
-        // Создаем периодическое обновление через chrome.alarms
+        // Alarms survive Manifest V3 service worker suspension; JS timers do not.
+        const periodInMinutes = Math.max(0.5, this.updateInterval / 60000);
         chrome.alarms.create('priceUpdate', {
-            delayInMinutes: 0.5, // 30 секунд
-            periodInMinutes: 0.5
-        });
-        
-        // Слушаем срабатывание будильника
-        chrome.alarms.onAlarm.addListener((alarm) => {
-            if (alarm.name === 'priceUpdate') {
-                this.updatePrice();
-            }
+            delayInMinutes: periodInMinutes,
+            periodInMinutes
         });
     }
     
@@ -38,16 +44,23 @@ class BackgroundService {
                 case 'GET_PRICE':
                     this.getCurrentPrice().then(sendResponse);
                     return true; // Асинхронный ответ
+
+                case 'REFRESH_PRICE':
+                    this.updatePrice().then(
+                        data => sendResponse({ data }),
+                        error => sendResponse({ error: error.message })
+                    );
+                    return true;
                     
                 case 'START_TRACKING':
-                    this.startPriceTracking();
-                    sendResponse({ success: true });
-                    break;
+                    this.startPriceTracking().then(() => sendResponse({ success: true }),
+                        error => sendResponse({ error: error.message }));
+                    return true;
                     
                 case 'STOP_TRACKING':
-                    this.stopPriceTracking();
-                    sendResponse({ success: true });
-                    break;
+                    this.stopPriceTracking().then(() => sendResponse({ success: true }),
+                        error => sendResponse({ error: error.message }));
+                    return true;
                     
                 case 'UPDATE_INTERVAL':
                     this.updateInterval = message.interval;
@@ -71,34 +84,27 @@ class BackgroundService {
         if (this.isRunning) return;
         
         this.isRunning = true;
+        await chrome.storage.local.set({ trackingEnabled: true });
+        this.setupAlarms();
         console.log('RobotCYB Price Tracker: Отслеживание цен запущено');
         
         // Первоначальное обновление
-        await this.updatePrice();
+        await this.updatePrice().catch(error => console.error('Ошибка обновления цены:', error));
         
-        // Запускаем периодическое обновление
-        this.intervalId = setInterval(() => {
-            this.updatePrice();
-        }, this.updateInterval);
     }
     
-    stopPriceTracking() {
-        if (!this.isRunning) return;
-        
+    async stopPriceTracking() {
         this.isRunning = false;
         console.log('RobotCYB Price Tracker: Отслеживание цен остановлено');
         
-        if (this.intervalId) {
-            clearInterval(this.intervalId);
-            this.intervalId = null;
-        }
+        await chrome.alarms.clear('priceUpdate');
+        await chrome.storage.local.set({ trackingEnabled: false });
     }
     
     restartTracking() {
-        this.stopPriceTracking();
-        setTimeout(() => {
-            this.startPriceTracking();
-        }, 1000);
+        if (!this.isRunning) return;
+        this.setupAlarms();
+        this.updatePrice().catch(error => console.error('Ошибка обновления цены:', error));
     }
     
     async updatePrice() {
@@ -113,25 +119,38 @@ class BackgroundService {
             
             // Обновляем badge с ценой
             this.updateBadge(priceData.price);
+
+            return priceData;
             
         } catch (error) {
             console.error('Ошибка обновления цены:', error);
+            throw error;
         }
     }
     
     async fetchPriceData() {
-        // В реальном приложении здесь был бы запрос к API
-        // Для демонстрации используем симуляцию
-        const basePrice = 0.00012345;
-        const variation = (Math.random() - 0.5) * 0.00001;
-        const price = basePrice + variation;
+        const response = await fetch(
+            `https://api.dexscreener.com/token-pairs/v1/solana/${this.tokenAddress}`,
+            { signal: AbortSignal.timeout(10000) }
+        );
+        if (!response.ok) throw new Error(`Price API returned HTTP ${response.status}`);
+        const pairs = await response.json();
+        if (!Array.isArray(pairs)) throw new Error('Invalid price API response');
+        const pair = pairs.filter(p =>
+            p.chainId === 'solana' && p.baseToken?.address === this.tokenAddress &&
+            p.priceUsd !== null && p.priceUsd !== undefined &&
+            Number.isFinite(Number(p.priceUsd)) && Number(p.priceUsd) > 0
+        ).sort((a, b) => (Number(b.liquidity?.usd) || 0) - (Number(a.liquidity?.usd) || 0))[0];
+        if (!pair) throw new Error('No USD market price is available for RobotCYB');
         
         return {
-            price: price,
-            change: (Math.random() - 0.5) * 10, // Изменение от -5% до +5%
+            price: Number(pair.priceUsd),
+            change: Number.isFinite(Number(pair.priceChange?.h24)) ? Number(pair.priceChange.h24) : 0,
             timestamp: Date.now(),
             tokenAddress: this.tokenAddress,
-            chain: this.chain
+            chain: this.chain,
+            source: 'DexScreener',
+            pairAddress: pair.pairAddress
         };
     }
     
@@ -171,10 +190,13 @@ class BackgroundService {
         chrome.storage.sync.get(['robotcyb-settings'], (result) => {
             const settings = result['robotcyb-settings'] || {};
             if (settings.showBadge !== false) {
-                const priceText = price.toFixed(6).replace(/\.?0+$/, '');
+                const priceText = price < 0.01 || price >= 1000
+                    ? price.toExponential(0)
+                    : price >= 100 ? price.toFixed(0)
+                    : price >= 10 ? price.toFixed(1) : price.toFixed(2);
                 
                 chrome.action.setBadgeText({
-                    text: priceText.length > 4 ? priceText.substring(0, 4) : priceText
+                    text: priceText
                 });
                 
                 chrome.action.setBadgeBackgroundColor({
@@ -210,7 +232,7 @@ class BackgroundService {
     onInstalled(details) {
         if (details.reason === 'install') {
             console.log('RobotCYB Price Tracker установлен');
-            this.startPriceTracking();
+            this.startPriceTracking().catch(error => console.error('Ошибка запуска:', error));
         } else if (details.reason === 'update') {
             console.log('RobotCYB Price Tracker обновлен');
         }
@@ -219,7 +241,7 @@ class BackgroundService {
     // Обработка активации расширения
     onStartup() {
         console.log('RobotCYB Price Tracker запущен при старте браузера');
-        this.startPriceTracking();
+        this.restoreTracking().catch(error => console.error('Ошибка запуска:', error));
     }
 }
 
@@ -235,7 +257,4 @@ chrome.runtime.onStartup.addListener(() => {
     backgroundService.onStartup();
 });
 
-// Обработка закрытия браузера
-chrome.runtime.onSuspend.addListener(() => {
-    backgroundService.stopPriceTracking();
-}); 
+// Alarms and stored tracking preferences must survive worker suspension.
