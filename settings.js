@@ -63,6 +63,7 @@ class SettingsManager {
             if (result['robotcyb-settings']) {
                 this.settings = { ...this.settings, ...result['robotcyb-settings'] };
             }
+            this.updateUI();
         });
     }
     
@@ -235,4 +236,4 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === 'GET_SETTINGS') {
         sendResponse(settingsManager.settings);
     }
-}); 
+});
