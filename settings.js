@@ -63,6 +63,7 @@ class SettingsManager {
             if (result['robotcyb-settings']) {
                 this.settings = { ...this.settings, ...result['robotcyb-settings'] };
             }
+            this.updateUI();
         });
     }
     
